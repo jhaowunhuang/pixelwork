@@ -2,10 +2,11 @@ import cv2
 import numpy as np
 
 def func():
-    radius = 256
+    radius = 512
     position = [256, 256]
-    cov = [[radius // 4, 0], [0, radius // 4]]
-    x, y = np.random.multivariate_normal(position, cov, 50000).T
+    signals = int(1000000)
+    cov = [[radius, 0], [0, radius]]
+    x, y = np.random.multivariate_normal(position, cov, signals).T
     xedges = range(512)
     yedges = range(512)
     H, xedges, yedges = np.histogram2d(x, y, bins = (xedges, yedges))
