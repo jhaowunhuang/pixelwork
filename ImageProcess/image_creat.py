@@ -2,8 +2,10 @@ import cv2
 import numpy as np
 import scipy.stats
 
-class pixelwork:
+
+class PixelWork:
     def __init__(self):
+<<<<<<< HEAD
         self.pix_map = {} #output image info
         self.img_height = 512 #default height
         self.img_width = 512 #default width
@@ -12,16 +14,29 @@ class pixelwork:
         self.ax = 0 #x distribution skew
         self.ay = 0 #y distribution skew
         self.signals = 100 #number of signals in each pixel
+=======
+        self.pix_map = {}  # output image info
+        self.img_height = 512  # default height
+        self.img_width = 512  # default width
+        self.sigma = 16  # equivalent to spot size
+        self.cov = [[self.sigma, 0], [0, self.sigma]]  # spot shape
+        self.signals = 100  # number of signals in each pixel
+        self.input_file_name = ''
+        self.output_file_name = ''
+>>>>>>> 79337294712b628fc649be4f9741abf82c2cd684
 
-    #add individual pixels
+    # add individual pixels
     def add_pixel(self, x, y):
         self.pix_map[(x, y)] = scipy.stats.skewnorm.rvs([self.ax, self.ay], [x, y], [self.sigma, self.sigma], [self.signals, 2]).T
         
         #self.pix_map[(x, y)] = np.random.multivariate_normal([x, y], self.cov, self.signals).T
 
-    #get coordinates of black pixels in an image
-    def add_image(self, input_img):
-        img_arr = cv2.imread(input_img, cv2.IMREAD_GRAYSCALE)
+    # get coordinates of black pixels in an image
+    def add_image(self):
+        # allow the file name from arguments
+        current_input_file_name = self.input_file_name if self.input_file_name != "" else 'sample/input.jpg'
+        print('current_input_file_name: ', current_input_file_name)
+        img_arr = cv2.imread(current_input_file_name, cv2.IMREAD_GRAYSCALE)
         self.img_width, self.img_height = img_arr.shape
 
         def nearest_edge(x, y):
@@ -55,12 +70,13 @@ class pixelwork:
  #                   self.cov = [[min(self.sigma, near_x_edge), 0], [0, min(self.sigma, near_y_edge), 0]]
                     self.add_pixel(x, y)
 
-    #draw the simulated image
+    # draw the simulated image
     def draw(self):
         x_sum = np.concatenate([self.pix_map[item][0] for item in self.pix_map])
         y_sum = np.concatenate([self.pix_map[item][1] for item in self.pix_map])
         xedges = range(self.img_width + 1)
         yedges = range(self.img_height + 1)
+<<<<<<< HEAD
         H, xedges, yedges = np.histogram2d(x_sum, y_sum, bins = (xedges, yedges))
         cv2.imwrite('../Sample/output.jpg', H)
 
@@ -70,3 +86,10 @@ new_pic.add_image('../Sample/input.jpg')
 #new_pic.add_pixel(256, 256)
 new_pic.draw()
 
+=======
+        H, xedges, yedges = np.histogram2d(x_sum, y_sum, bins=(xedges, yedges))
+        # allow the file name from arguments
+        current_output_file_name = self.output_file_name if self.output_file_name != "" else 'sample/output.jpg'
+        print('current_output_file_name: ', current_output_file_name)
+        cv2.imwrite(current_output_file_name, H)
+>>>>>>> 79337294712b628fc649be4f9741abf82c2cd684
