@@ -5,7 +5,6 @@ import scipy.stats
 
 class PixelWork:
     def __init__(self):
-<<<<<<< HEAD
         self.pix_map = {} #output image info
         self.img_height = 512 #default height
         self.img_width = 512 #default width
@@ -14,16 +13,8 @@ class PixelWork:
         self.ax = 0 #x distribution skew
         self.ay = 0 #y distribution skew
         self.signals = 100 #number of signals in each pixel
-=======
-        self.pix_map = {}  # output image info
-        self.img_height = 512  # default height
-        self.img_width = 512  # default width
-        self.sigma = 16  # equivalent to spot size
-        self.cov = [[self.sigma, 0], [0, self.sigma]]  # spot shape
-        self.signals = 100  # number of signals in each pixel
         self.input_file_name = ''
         self.output_file_name = ''
->>>>>>> 79337294712b628fc649be4f9741abf82c2cd684
 
     # add individual pixels
     def add_pixel(self, x, y):
@@ -76,20 +67,8 @@ class PixelWork:
         y_sum = np.concatenate([self.pix_map[item][1] for item in self.pix_map])
         xedges = range(self.img_width + 1)
         yedges = range(self.img_height + 1)
-<<<<<<< HEAD
-        H, xedges, yedges = np.histogram2d(x_sum, y_sum, bins = (xedges, yedges))
-        cv2.imwrite('../Sample/output.jpg', H)
-
-
-new_pic = pixelwork()
-new_pic.add_image('../Sample/input.jpg')
-#new_pic.add_pixel(256, 256)
-new_pic.draw()
-
-=======
         H, xedges, yedges = np.histogram2d(x_sum, y_sum, bins=(xedges, yedges))
         # allow the file name from arguments
         current_output_file_name = self.output_file_name if self.output_file_name != "" else 'sample/output.jpg'
         print('current_output_file_name: ', current_output_file_name)
         cv2.imwrite(current_output_file_name, H)
->>>>>>> 79337294712b628fc649be4f9741abf82c2cd684
