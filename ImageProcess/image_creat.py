@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from scipy.stats import multivariate_normal
-
+import scipy.stats
 
 class PixelWork:
     def __init__(self):
