@@ -15,8 +15,4 @@ def main():
     new_pic.draw()
 
 
-<<<<<<< HEAD
 main()
-=======
-main()
->>>>>>> 2a407145d08094aafde09029e0000604809e8cde
