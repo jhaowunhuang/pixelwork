@@ -1,17 +1,18 @@
 import cv2
 import numpy as np
+from scipy.stats import multivariate_normal as mn 
 from scipy.stats import skewnorm
 import datetime
 
 class PixelWork:
     def __init__(self):
         self.input_file_name = ''
-        self.input_img_arr = None 
+        self.input_img_arr = None
         self.output_file_name = ''
-        self.output_img_arr = None 
+        self.output_img_arr = None
         self.img_height = 0 #default height
         self.img_width = 0 #default width
-        self.spot_size = 5 #equivalent to spot size
+        self.spot_size = 10 #equivalent to spot size
         self.edge_factor = 0 #near edge effect
         self.signals = 100 #number of signals in each pixel
 
@@ -32,11 +33,16 @@ class PixelWork:
         it = np.nditer(self.input_img_arr, flags=['multi_index'])
         for elem in it:
             if elem < 128:
-                x_pos = skewnorm.rvs(a=self.edge_factor, loc=it.multi_index[0], scale=self.spot_size, size=self.signals)
-                y_pos = skewnorm.rvs(a=self.edge_factor, loc=it.multi_index[1], scale=self.spot_size, size=self.signals)
+                pos = mn.rvs(it.multi_index, [[self.spot_size, 0], [0, self.spot_size]], size=self.signals)
+                extra = np.array([[-1, -1]])
+                for item in pos:
+                    if self.input_img_arr[int(round(item[0], 0)), int(round(item[1], 0))] >= 128:
+                        for _ in range(5):
+                            extra = np.concatenate((extra, [it.multi_index]))
+                pos = np.concatenate((pos, extra))
+                x_pos, y_pos = pos.T
                 hist, xedges, yedges = np.histogram2d(x_pos, y_pos, bins=512, range=[[0, 512], [0, 512]])
-                self.output_img_arr += hist
-        print(self.input_img_arr.size)
+                self.output_img_arr += hist 
         # allow the file name from arguments
         current_output_file_name = self.output_file_name if self.output_file_name else 'sample/output.jpg'
         print('current_output_file_name: ', current_output_file_name)
