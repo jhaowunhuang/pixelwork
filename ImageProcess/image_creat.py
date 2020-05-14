@@ -14,7 +14,7 @@ class PixelWork:
         self.img_width = 0 #default width
         self.spot_size = 10 #equivalent to spot size
         self.edge_factor = 0 #near edge effect
-        self.signals = 100 #number of signals in each pixel
+        self.signals = 200 #number of signals in each pixel
 
 
     # get input image array 
@@ -36,10 +36,18 @@ class PixelWork:
                 pos = mn.rvs(it.multi_index, [[self.spot_size, 0], [0, self.spot_size]], size=self.signals)
                 extra = np.array([[-1, -1]])
                 for item in pos:
-                    if self.input_img_arr[int(round(item[0], 0)), int(round(item[1], 0))] >= 128:
-                        for _ in range(5):
+                    if all([0 <= int(round(x, 0)) < 512 for x in item]) and self.input_img_arr[int(round(item[0], 0)), int(round(item[1], 0))] >= 128:
+                        for _ in range(3):
                             extra = np.concatenate((extra, [it.multi_index]))
                 pos = np.concatenate((pos, extra))
+                x_pos, y_pos = pos.T
+                hist, xedges, yedges = np.histogram2d(x_pos, y_pos, bins=512, range=[[0, 512], [0, 512]])
+                self.output_img_arr += hist 
+            else:
+                pos = mn.rvs(it.multi_index, [[self.spot_size, 0], [0, self.spot_size]], size=self.signals//2)
+                for item in pos:
+                    if all([0 <= int(round(x, 0)) < 512 for x in item]) and self.input_img_arr[int(round(item[0], 0)), int(round(item[1], 0))] < 128:
+                       pos = pos 
                 x_pos, y_pos = pos.T
                 hist, xedges, yedges = np.histogram2d(x_pos, y_pos, bins=512, range=[[0, 512], [0, 512]])
                 self.output_img_arr += hist 
